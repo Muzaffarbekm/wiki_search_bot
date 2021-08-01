@@ -12,7 +12,6 @@
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
-
 # AWS User-specific
 .idea/**/aws.xml
 
@@ -123,6 +122,8 @@ fabric.properties
 # Ignore all local history of files
 .history
 .ionide
+
+.settings/local_settings.py
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,pycharm
 {"mode":"full","isActive":false}
