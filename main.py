@@ -1,8 +1,5 @@
-from threading import local
-from typing import Reversible
-from telegram.bot import Bot
-from telegram.user import User  
-from telegram.ext import Updater,Dispatcher,CommandHandler,CallbackContext
+from telegram.ext import Updater,CommandHandler,CallbackContext, MessageHandler
+from telegram.ext.filters import Filters
 from telegram.update import Update
 import local_settings
 import requests
@@ -39,6 +36,7 @@ def search(update:Update, context:CallbackContext):
 dispatcher = updater.dispatcher
 dispatcher.add_handler(CommandHandler('start', start))
 dispatcher.add_handler(CommandHandler('search', search))
+dispatcher.add_handler(MessageHandler(Filters.all, start))
 
 updater.start_polling()
 updater.idle()
