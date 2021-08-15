@@ -1,24 +1,44 @@
 from threading import local
+from typing import Reversible
 from telegram.bot import Bot
 from telegram.user import User  
 from telegram.ext import Updater,Dispatcher,CommandHandler,CallbackContext
 from telegram.update import Update
-from settings import local_settings
+import local_settings
+import requests
 
-
-# bot =  Bot(token="1912334379:AAF9Xdi9y3hAebzqpyCQc01SalrFqXC4MCU")
-# user : User = bot.get_me()   # it wraps to the User class.
-# print(user.link)   # it generates bot link 
 
 updater = Updater(token=local_settings.TELEGRAM_TOKEN)
 
 def start(update:Update, context:CallbackContext):
-    update.message.reply_text("Hello Muzaffarbek")
-    context.bot.send_message(chat_id=update.message.chat_id,text="OOPS")
-    print(update)
+    update.message.reply_text("Short instruction on how to use our bot. Write command like /search helicopter. ")
+   
+
+def search(update:Update, context:CallbackContext):
+    args = context.args
+
+    if len(args) == 0:
+        update.message.reply_text("Please write something otherwise we cannot help you.")
+    else:    
+        searched_text = ' '.join(args)
+        response = requests.get("https://en.wikipedia.org/w/api.php", {
+            "action": "opensearch",
+            "search": searched_text,
+            "namespace": 0,
+            "limit": 1,
+            "format": "json",
+        })
+        link = response.json()[3]
+
+        if len(link):
+            update.message.reply_text("This is searched result: " + link[0])
+        else:
+            update.message.reply_text("We could't find anything")
+        
 
 dispatcher = updater.dispatcher
 dispatcher.add_handler(CommandHandler('start', start))
+dispatcher.add_handler(CommandHandler('search', search))
 
 updater.start_polling()
 updater.idle()
